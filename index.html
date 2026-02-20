@@ -125,7 +125,7 @@
 
         // 初期データ (すべて空にする)
         const initialData = {
-            createDate: new Date().toLocaleDateString('ja-JP', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+            createEra: '令和', createYear: '8', createMonth: '2', createDay: '20',
             facilityName: '社会福祉法人 聖フランシスコ会\n特別養護老人ホーム カサデマドレ',
             staffName: '',
             
@@ -357,6 +357,11 @@
                         </div>
 
                         <InputGroup title="1. 基本情報">
+                        <Label>作成日</Label>
+                            <div className="relative bg-gray-700 rounded border border-gray-600">
+                                        <input type="date" value={data.admissionDate} onChange={e=>up('admissionDate',e.target.value)} className="w-full bg-transparent text-white px-2 py-1 outline-none cursor-pointer" style={{colorScheme:"dark"}}/>
+                                        <span className="absolute right-2 top-1 pointer-events-none">📅</span>
+                                    </div>
                             <div className="grid grid-cols-2 gap-2 mb-2">
                                 <div><Label>フリガナ</Label><Input value={data.kana} onChange={v=>up('kana',v)} /></div>
                                 <div><Label>氏名</Label><Input value={data.name} onChange={v=>up('name',v)} /></div>
@@ -383,7 +388,7 @@
                                 <div>
                                     <Label>入所日 (カレンダー)</Label>
                                     <div className="relative bg-gray-700 rounded border border-gray-600">
-                                        <input type="date" value={data.admissionDate} onChange={e=>up('admissionDate',e.target.value)} className="w-full bg-transparent text-white px-2 py-1 outline-none cursor-pointer" style={{colorScheme:"dark"}}/>
+                                        <input type="date" value={data.createdDate} onChange={e=>up('createdDate',e.target.value)} className="w-full bg-transparent text-white px-2 py-1 outline-none cursor-pointer" style={{colorScheme:"dark"}}/>
                                         <span className="absolute right-2 top-1 pointer-events-none">📅</span>
                                     </div>
                                 </div>
@@ -603,6 +608,7 @@
                         </InputGroup>
                         
                         <InputGroup title="6. その他">
+                            
                             <Label>特記事項</Label>
                             <TextArea value={data.specialNote} onChange={v=>up('specialNote',v)} rows="3" />
                             <Label>施設名</Label><TextArea value={data.facilityName} onChange={v=>up('facilityName',v)} rows="2" />
@@ -618,7 +624,7 @@
                             <div className="relative border-b-2 border-black mb-1 pb-1 h-10 flex items-end justify-center">
                                 <h1 className="text-2xl font-bold">看護サマリー</h1>
                                 <div className="absolute right-0 bottom-1 text-sm">
-                                    作成日：{data.createDate}
+                                    作成日：{toWareki(data.admissionDate)}
                                 </div>
                             </div>
 
@@ -644,7 +650,7 @@
                                         <th>住所</th>
                                         <td className="text-xs p-1">{data.address}</td>
                                         <th>入所日</th>
-                                        <td className="text-center text-xs whitespace-nowrap tracking-tighter px-0 font">{toWareki(data.admissionDate)}</td>
+                                        <td className="text-center text-xs whitespace-nowrap tracking-tighter px-0 font">{toWareki(data.createdDate)}</td>
                                     </tr>
                                     {/* 2行目 */}
                                     <tr>
@@ -823,7 +829,7 @@
                                             <div style={{whiteSpace:'pre-wrap'}}>{data.food_note}</div>
                                         </td>
                                     </tr>
-                           <tr>
+                                     <tr>
   <th className="bg-gray-100 border-r border-black p-1 text-sm font-normal align-middle">
     排泄
   </th>

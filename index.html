@@ -742,10 +742,13 @@
                                 </colgroup>
                                 <tbody>
                                     <tr>
-                                        <th style={{height:'70px'}}>既往歴</th>
+                                        <th style={{height:'120.75px'}}>既往歴</th>
                                         <td className="align-top" style={{whiteSpace:'pre-wrap'}}>{data.pastIllness}</td>
                                         <th>家族構成</th>
-                                        <td className="align-top" style={{whiteSpace:'pre-wrap'}}>{data.familyStructure}</td>
+                                        <td className="align-top relative" style={{whiteSpace:'pre-wrap'}}>
+                                            {data.familyStructure}
+                                            <div className="absolute bottom-1 right-1 text-[10px]">☆：キーパーソン</div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -797,8 +800,8 @@
                                 </tbody>
                             </table>
 
-                            <div className="text-sm font-bold border-b border-black mb-1">&lt;入院までの経過&gt;</div>
-                            <div className="border border-black p-2 min-h-[70px] text-sm mb-1" style={{whiteSpace:'pre-wrap'}}>
+                            <div className="text-center font-bold text-sm border-b border-black mb-1">&lt;入院までの経過&gt;</div>
+                            <div className="border border-black p-2 text-sm mb-1" style={{whiteSpace:'pre-wrap', height: '177.6px'}}>
                                 {data.historyInfo}
                             </div>
 
@@ -918,7 +921,7 @@
                                     <div className="whitespace-pre-wrap font-bold text-center mb-2">{data.facilityName}</div>
                                     <div className="text-right">
                                         <span className="mr-2 text-xs">サマリー担当者</span>
-                                        <span className="border-b border-black inline-block w-24 text-center mr-2">{data.staffName}</span>
+                                        <span className="border-b border-transparent inline-block w-24 text-center mr-2">{data.staffName}</span>
                                         <span className="border border-black rounded-full w-4 h-4 inline-flex items-center justify-center text-[10px] align-middle">印</span>
                                     </div>
                                 </div>

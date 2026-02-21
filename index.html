@@ -761,9 +761,9 @@
                                 <tbody>
                                     <tr>
                                         <th>感染症</th>
-                                        <td>{data.infection === '有' ? (data.infectionDetail && data.infectionDetail.trim() !== '' ? `有 (${data.infectionDetail})` : '有') : '無'}</td>
+                                        <td>{data.infection === '有' ? (data.infectionDetail && data.infectionDetail.trim() !== '' ? `有 (${data.infectionDetail})` : '有') : '（－）'}</td>
                                         <th className="bg-gray-200 border-l border-black">アレルギー</th>
-                                        <td>{data.allergy === '有' ? (data.allergyDetail && data.allergyDetail.trim() !== '' ? `有 (${data.allergyDetail})` : '有') : '無'}</td>
+                                        <td>{data.allergy === '有' ? (data.allergyDetail && data.allergyDetail.trim() !== '' ? `有 (${data.allergyDetail})` : '有') : '（－）'}</td>
                                     </tr>
                                 </tbody>
                             </table>

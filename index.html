@@ -123,7 +123,7 @@
             return `${seirekiYear}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         };
 
-        // 初期データ (すべて空にする)
+        // 初期データ
         const initialData = {
             createEra: '令和', createYear: '8', createMonth: '2', createDay: '20',
             facilityName: '社会福祉法人 聖フランシスコ会\n特別養護老人ホーム カサデマドレ',
@@ -157,7 +157,8 @@
             food_level: '', food_main: '', food_side: '', food_toromi: '',
             food_note: '', 
 
-            exc_level: '', exc_tool: { toilet: false, portable: false, rehab_pants: false, diaper: false },
+            exc_level: '', exc_tool: { toilet: false, portable: false, rehab_pants: false, diaper: false, ba_catheter: false },
+            exc_tool_note: '',
             exc_urine_freq: '', exc_stool_freq: '', exc_last_stool_month: '', exc_last_stool_day: '',
             exc_urine_sense: '', exc_stool_sense: '', exc_laxative: '', exc_laxative_detail: '',
             exc_note: '', 
@@ -186,7 +187,7 @@
         const sideDishOptions = ['普通', '刻み', 'ソフト', 'ミキサー', 'ゼリー'];
         const toromiOptions = ['なし', '有 (強)', '有 (中間)', '有 (薄い)'];
 
-        // UIコンポーネント (値を直接返すように統一)
+        // UIコンポーネント
         const InputGroup = ({ title, children }) => (
             <div className="bg-gray-800 p-3 rounded mb-4 border border-gray-600">
                 <h3 className="text-sm font-bold text-green-400 mb-2 border-b border-gray-600 pb-1">{title}</h3>
@@ -288,11 +289,9 @@
             };
 
             const moveLabels = { walk: '独歩', cane: '杖', car: '老人車', walker: '歩行器', wheelchair: '車椅子', reclining: 'リクライニング' };
-            const excLabels = { toilet: 'トイレ', portable: 'ポータブル', rehab_pants: 'リハパン', diaper: 'オムツ' };
+            const excLabels = { toilet: 'トイレ', portable: 'ポータブル', rehab_pants: 'リハパン', diaper: 'オムツ', ba_catheter: 'Baカテーテル' };
             const disLabels = { sight: '視覚', hearing: '聴覚', speech: '言語', cognitive: '認知', motor: '運動', other: 'その他' };
 
-            // --- FIX START ---
-            // PDFエクスポート処理
             const handleExportPdf = () => {
                 const element = document.getElementById('print-area');
                 const opt = {
@@ -302,7 +301,6 @@
                     html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
-                // ライブラリを使用してPDF生成
                 if (window.html2pdf) {
                     window.html2pdf().set(opt).from(element).save();
                 } else {
@@ -310,7 +308,6 @@
                 }
             };
 
-            // データ保存（JSONファイル書き出し）
             const handleSaveFile = () => {
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -321,7 +318,6 @@
                 URL.revokeObjectURL(url);
             };
 
-            // データ読み込み（JSONファイル読み込み）
             const handleLoadFile = (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -335,9 +331,8 @@
                     }
                 };
                 reader.readAsText(file);
-                e.target.value = ''; // 連続読み込みを可能にするためリセット
+                e.target.value = '';
             };
-            // --- FIX END ---
 
             return (
                 <div className="flex flex-col md:flex-row min-h-screen">
@@ -357,11 +352,11 @@
                         </div>
 
                         <InputGroup title="1. 基本情報">
-                        <Label>作成日</Label>
+                            <Label>作成日</Label>
                             <div className="relative bg-gray-700 rounded border border-gray-600">
-                                        <input type="date" value={data.admissionDate} onChange={e=>up('admissionDate',e.target.value)} className="w-full bg-transparent text-white px-2 py-1 outline-none cursor-pointer" style={{colorScheme:"dark"}}/>
-                                        <span className="absolute right-2 top-1 pointer-events-none">📅</span>
-                                    </div>
+                                <input type="date" value={data.admissionDate} onChange={e=>up('admissionDate',e.target.value)} className="w-full bg-transparent text-white px-2 py-1 outline-none cursor-pointer" style={{colorScheme:"dark"}}/>
+                                <span className="absolute right-2 top-1 pointer-events-none">📅</span>
+                            </div>
                             <div className="grid grid-cols-2 gap-2 mb-2">
                                 <div><Label>フリガナ</Label><Input value={data.kana} onChange={v=>up('kana',v)} /></div>
                                 <div><Label>氏名</Label><Input value={data.name} onChange={v=>up('name',v)} /></div>
@@ -532,7 +527,9 @@
                                     <CheckBox label="ポータブル" checked={data.exc_tool.portable} onChange={v=>upDeep('exc_tool','portable',v)}/>
                                     <CheckBox label="リハパン" checked={data.exc_tool.rehab_pants} onChange={v=>upDeep('exc_tool','rehab_pants',v)}/>
                                     <CheckBox label="オムツ" checked={data.exc_tool.diaper} onChange={v=>upDeep('exc_tool','diaper',v)}/>
+                                    <CheckBox label="Baカテーテル" checked={data.exc_tool.ba_catheter} onChange={v=>upDeep('exc_tool','ba_catheter',v)}/>
                                 </div>
+                                <div className="mt-2"><Label>用具備考（Baサイズなど）</Label><Input value={data.exc_tool_note} onChange={v=>up('exc_tool_note',v)} placeholder="例：サイズ14Fr、固定水量など" className="w-full"/></div>
                                 <div className="grid grid-cols-2 gap-2 mt-2">
                                     <div><Label>排尿(回/日)</Label><Input value={data.exc_urine_freq} onChange={v=>up('exc_urine_freq',v)}/></div>
                                     <div><Label>排便(回/日)</Label><Input value={data.exc_stool_freq} onChange={v=>up('exc_stool_freq',v)}/></div>
@@ -608,7 +605,6 @@
                         </InputGroup>
                         
                         <InputGroup title="6. その他">
-                            
                             <Label>特記事項</Label>
                             <TextArea value={data.specialNote} onChange={v=>up('specialNote',v)} rows="3" />
                             <Label>施設名</Label><TextArea value={data.facilityName} onChange={v=>up('facilityName',v)} rows="2" />
@@ -624,13 +620,12 @@
                             <div className="relative border-b-2 border-black mb-1 pb-1 h-10 flex items-end justify-center">
                                 <h1 className="text-2xl font-bold">看護サマリー</h1>
                                 <div className="absolute right-0 bottom-1 text-sm">
-                                    作成日：{toWareki(data.admissionDate)}
+                                    作成日：{toWareki(data.admissionDate) || '　　年　　月　　日'}
                                 </div>
                             </div>
 
                             {/* 基本情報エリア */}
                             <table className="excel mb-1 mt-2">
-                                {/* 列定義（8列） */}
                                 <colgroup>
                                     <col style={{width:'70px'}}/><col style={{width:'14%'}}/>
                                     <col style={{width:'30px'}}/><col style={{width:'40px'}}/>
@@ -638,7 +633,6 @@
                                     <col style={{width:'80px'}}/><col style={{width:'14%'}}/>
                                 </colgroup>
                                 <tbody>
-                                    {/* 1行目 */}
                                     <tr>
                                         <th>フリガナ</th>
                                         <td colSpan="2" className="border-r-0 p-0 overflow-visible">
@@ -652,7 +646,6 @@
                                         <th>入所日</th>
                                         <td className="text-center text-xs whitespace-nowrap tracking-tighter px-0 font">{toWareki(data.createdDate)}</td>
                                     </tr>
-                                    {/* 2行目 */}
                                     <tr>
                                         <th>氏名</th>
                                         <td colSpan="2" className="p-1 font whitespace-nowrap overflow-visible border-r">
@@ -671,7 +664,6 @@
                                         <th>主治医</th>
                                         <td className="text-center text-xs whitespace-nowrap">{data.doctor}</td>
                                     </tr>
-                                    {/* 3行目 */}
                                     <tr>
                                         <th>生年月日</th>
                                         <td colSpan="2" className="text-center p-0 border-r-0 overflow-visible">
@@ -805,7 +797,7 @@
                                 {data.historyInfo}
                             </div>
 
-                            {/* ADL表（チェック済みのみ表示） */}
+                            {/* ADL表 */}
                             <table className="excel flex-grow">
                                 <colgroup>
                                     <col style={{width:'12%'}}/><col style={{width:'30%'}}/><col/>
@@ -833,38 +825,36 @@
                                         </td>
                                     </tr>
                                      <tr>
-  <th className="bg-gray-100 border-r border-black p-1 text-sm font-normal align-middle">
-    排泄
-  </th>
-  
-  <td className="border-r border-black p-1 align-top leading-tight">
-    <div className="border-b border-dotted border-black mb-0.5 pb-0.5 text-sm">
-      {data.exc_level}
-    </div>
-    <div className="text-[11px]">
-      排尿: {data.exc_urine_freq}回/日<br/>
-      排便: {data.exc_stool_freq}
-    </div>
-  </td>
+                                      <th className="bg-gray-100 border-r border-black p-1 text-sm font-normal align-middle">
+                                        排泄
+                                      </th>
+                                      
+                                      <td className="border-r border-black p-1 align-top leading-tight">
+                                        <div className="border-b border-dotted border-black mb-0.5 pb-0.5 text-sm">
+                                          {data.exc_level}
+                                        </div>
+                                        <div className="text-[11px]">
+                                          排尿: {data.exc_urine_freq}回/日<br/>
+                                          排便: {data.exc_stool_freq}
+                                        </div>
+                                      </td>
 
-  {/* relativeを指定し、高さを中身（テキスト）に合わせる */}
-  <td className="p-1 align-top text-[11px] leading-tight relative min-h-[3em]">
-    <div>
-      <div>用具: {getCheckedItems(data.exc_tool, excLabels)}</div>
-      <div className="flex gap-2">
-        <span>尿意: {data.exc_urine_sense}</span>
-        <span>便意: {data.exc_stool_sense}</span>
-      </div>
-      <div>下剤: {data.exc_laxative === '有' ? `有 (${data.exc_laxative_detail})` : '無'}</div>
-      <div style={{ whiteSpace: 'pre-wrap' }}>{data.exc_note}</div>
-    </div>
-    
-    {/* absoluteで右下に固定。これでこの行自体は高さを取らなくなります */}
-    <div className="absolute bottom-2 right-1 text-[12px]">
-      最終排便: {data.exc_last_stool_month}/{data.exc_last_stool_day}
-    </div>
-  </td>
-</tr>
+                                      <td className="p-1 align-top text-[11px] leading-tight relative min-h-[3em]">
+                                        <div>
+                                          <div>用具: {getCheckedItems(data.exc_tool, excLabels)} {data.exc_tool_note && `（${data.exc_tool_note}）`}</div>
+                                          <div className="flex gap-2">
+                                            <span>尿意: {data.exc_urine_sense}</span>
+                                            <span>便意: {data.exc_stool_sense}</span>
+                                          </div>
+                                          <div>下剤: {data.exc_laxative === '有' ? `有 (${data.exc_laxative_detail})` : '無'}</div>
+                                          <div style={{ whiteSpace: 'pre-wrap' }}>{data.exc_note}</div>
+                                        </div>
+                                        
+                                        <div className="absolute bottom-2 right-1 text-[12px]">
+                                          最終排便: {data.exc_last_stool_month || '　　　'}/{data.exc_last_stool_day || '　　　'}
+                                        </div>
+                                      </td>
+                                    </tr>
                                     <tr>
                                         <th>入浴</th>
                                         <td className="p-1">
@@ -874,7 +864,7 @@
                                         <td className="text-xs p-1">
                                             <div>方法: {data.bath_method}</div>
                                             <div style={{whiteSpace:'pre-wrap'}}>{data.bath_note}</div>
-                                            <div className="text-right mt-1 ">最終入浴: {data.bath_last_month}/{data.bath_last_day}</div>
+                                            <div className="text-right mt-1 text-[12px]">最終入浴: {data.bath_last_month || <span className="inline-block w-[3em]"></span>}/{data.bath_last_day || <span className="inline-block w-[3em]"></span>}</div>
                                         </td>
                                     </tr>
                                     <tr>

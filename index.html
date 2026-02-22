@@ -879,11 +879,14 @@
                                             <div className=" border-b border-dotted border-black mb-1">{data.bath_level}</div>
                                             <div className="text-xs">{data.bath_freq}回/週</div>
                                         </td>
-                                        <td className="text-xs p-1">
-                                            <div>方法: {data.bath_method}</div>
-                                            <div style={{whiteSpace:'pre-wrap'}}>{data.bath_note}</div>
-                                            <div className="text-right mt-1 text-[12px]">最終入浴: {data.bath_last_month || <span className="inline-block w-[3em]"></span>}/{data.bath_last_day || <span className="inline-block w-[3em]"></span>}</div>
-                                        </td>
+                                        <td className="text-xs p-1 relative min-h-[3em]">
+    <div>方法: {data.bath_method}</div>
+    <div style={{whiteSpace:'pre-wrap'}}>{data.bath_note}</div>
+    
+    <div className="absolute bottom-2 right-1 text-[12px]">
+        最終入浴: {data.bath_last_month || '　　　'}/{data.bath_last_day || '　　　'}
+    </div>
+</td>
                                     </tr>
                                     <tr>
                                         <th>更衣</th>
@@ -930,7 +933,7 @@
                                     <div className="text-right">
                                         <span className="mr-2 text-xs">サマリー担当者</span>
                                         <span className="border-b border-transparent inline-block w-24 text-center mr-2">{data.staffName}</span>
-                                    
+                                        
                                     </div>
                                 </div>
                             </div>

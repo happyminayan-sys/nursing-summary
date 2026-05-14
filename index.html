@@ -15,7 +15,7 @@
         body { font-family: 'Noto Sans JP', sans-serif; background-color: #555; margin: 0; padding: 20px; }
         
         .sheet {
-            width: 210mm; height: 297mm; background: white; padding: 8mm 10mm;
+            width: 210mm; height: 293mm; max-height: 293mm; background: white; padding: 8mm 10mm;
             box-shadow: 0 0 10px rgba(0,0,0,0.5); margin: 0 auto; color: black;
             font-size: 10pt; line-height: 1.3; box-sizing: border-box;
             display: flex; flex-direction: column; overflow: hidden;
@@ -61,6 +61,7 @@
         @media print {
             body { background: white; padding: 0; margin: 0; -webkit-print-color-adjust: exact; }
             .no-print { display: none !important; }
+            .print-wrapper { background: white !important; padding: 0 !important; width: 100% !important; height: auto !important; display: block !important; }
             .sheet { 
                 width: 210mm; 
                 height: 297mm; 
@@ -305,8 +306,9 @@
                     margin:       0,
                     filename:     fileName,
                     image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowHeight: element.offsetHeight },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak:    { mode: [] }
                 };
                 if (window.html2pdf) {
                     window.html2pdf().set(opt).from(element).save();
@@ -621,7 +623,7 @@
                     </div>
 
                     {/* 右側：プレビュー (A4印刷用) */}
-                    <div className="w-full md:w-2/3 bg-gray-500 p-4 overflow-y-auto h-screen flex justify-center">
+                    <div className="print-wrapper w-full md:w-2/3 bg-gray-500 p-4 overflow-y-auto h-screen flex justify-center">
                         <div id="print-area" className="sheet">
                             
                             {/* ヘッダー */}
@@ -688,11 +690,11 @@
                                             </span>
                                         </td>
                                         <td colSpan="4" className="p-0">
-                                            <div className="flex h-full items-center">
-                                                <div className="w-[100px] border-r border-black h-full flex items-center justify-center bg-gray-100 ">介護度</div>
-                                                <div className="w-[100px] border-r border-black h-full flex items-center justify-center text-sm ">{data.careLevel}</div>
-                                                <div className="w-[80px] border-r border-black h-full flex items-center justify-center bg-gray-100 text-xs ">ケアマネ</div>
-                                                <div className="flex-1 h-full flex items-center justify-center text-sm">{data.careManager}</div>
+                                            <div className="flex items-stretch" style={{minHeight:'1.8em'}}>
+                                                <div className="w-[100px] border-r border-black flex items-center justify-center bg-gray-100 px-1">介護度</div>
+                                                <div className="w-[100px] border-r border-black flex items-center justify-center text-sm px-1">{data.careLevel}</div>
+                                                <div className="w-[80px] border-r border-black flex items-center justify-center bg-gray-100 text-xs px-1">ケアマネ</div>
+                                                <div className="flex-1 flex items-center justify-center text-sm px-1">{data.careManager}</div>
                                             </div>
                                         </td>
                                     </tr>
@@ -708,7 +710,7 @@
                                     <tr>
                                         <th rowSpan="2">キーパーソン</th>
                                         <td className="p-0 align-top">
-                                            <div className="flex h-full">
+                                            <div className="flex">
                                                 <div className="w-1/2 border-r border-black">
                                                     <div className="border-b border-dotted border-black p-1 text-xs bg-gray-50">
                                                         <span className="border border-black px-1">緊急時連絡先①</span>
@@ -774,7 +776,7 @@
                             </table>
 
                             {/* 一般状態 */}
-                            <div className="text-center font-bold text-sm border-b border-black mb-1">&lt;入所期間中の一般状態&gt;</div>
+                            <div className="text-center font-bold text-sm border-b border-black mb-1" style={{paddingBottom:'2px'}}>&lt;入所期間中の一般状態&gt;</div>
                             <table className="excel mb-1 border-none">
                                 <tbody>
                                     <tr className="border-none">
@@ -806,7 +808,7 @@
                                 </tbody>
                             </table>
 
-                            <div className="text-center font-bold text-sm border-b border-black mb-1">&lt;入院までの経過&gt;</div>
+                            <div className="text-center font-bold text-sm border-b border-black mb-1" style={{paddingBottom:'2px'}}>&lt;入院までの経過&gt;</div>
                             <div className="border border-black p-2 text-sm mb-1" style={{whiteSpace:'pre-wrap', height: '177.6px'}}>
                                 {data.historyInfo}
                             </div>

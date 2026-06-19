@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>看護サマリー作成アプリ</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ▼ 全CDNバージョン固定済み (2025-06) ▼ -->
+    <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- ▲ バージョン変更時はここだけ編集 ▲ -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         
@@ -238,7 +240,6 @@
             </div>
         );
 
-        /* --- FIX: 空欄でも最小幅を確保するヘルパーコンポーネント --- */
         const Blank = ({ value, minWidth = '3em', children }) => (
             <span style={{ display: 'inline-block', minWidth, textAlign: 'center' }}>
                 {value || '\u00A0'}
@@ -658,7 +659,6 @@
                                     </tr>
                                     <tr>
                                         <th>氏名</th>
-                                        {/* --- FIX①: 氏名「様」を右端固定 --- */}
                                         <td colSpan="2" className="p-1 font whitespace-nowrap overflow-visible border-r">
                                             <div className="w-full flex justify-between items-center px-1">
                                                 <span className="text-base tracking-tighter flex-grow">{data.name}</span>
@@ -675,7 +675,6 @@
                                     </tr>
                                     <tr>
                                         <th>生年月日</th>
-                                        {/* --- FIX②: 生年月日 各値に最小幅確保 --- */}
                                         <td colSpan="2" className="text-center p-0 border-r-0 overflow-visible">
                                             <div className="w-full px-1 whitespace-nowrap text-[12px] tracking-tighter font">
                                                 <span style={{display:'inline-block', minWidth:'2.5em'}}>{data.birthEra || '\u00A0'}</span>
@@ -741,7 +740,7 @@
                                 </tbody>
                             </table>
 
-                            {/* 既往歴・家族構成・感染症・アレルギーエリア */}
+                            {/* 既往歴・家族構成 */}
                             <table className="excel mb-1">
                                 <colgroup>
                                     <col style={{width:'12%'}}/><col style={{width:'38%'}}/>
@@ -781,7 +780,6 @@
                                 <tbody>
                                     <tr className="border-none">
                                         <td className="border-none p-0">
-                                            {/* --- FIX③: 身長・体重・血圧・体温 空欄でも最小幅確保 --- */}
                                             <div className="border border-black p-1 mb-1 text-center font-normal">
                                                 <span>身長：<span style={{display:'inline-block', minWidth:'3em', textAlign:'right'}}>{data.height || '\u00A0'}</span> cm / 体重：<span style={{display:'inline-block', minWidth:'3em', textAlign:'right'}}>{data.weight || '\u00A0'}</span> kg</span>
                                                 {data.measureDate && (
@@ -840,11 +838,10 @@
                                             <div style={{whiteSpace:'pre-wrap'}}>{data.food_note}</div>
                                         </td>
                                     </tr>
-                                     <tr>
+                                    <tr>
                                       <th className="bg-gray-100 border-r border-black p-1 text-sm font-normal align-middle">
                                         排泄
                                       </th>
-                                      
                                       <td className="border-r border-black p-1 align-top leading-tight">
                                         <div className="border-b border-dotted border-black mb-0.5 pb-0.5 text-sm" style={{minHeight:'1.4em'}}>
                                           {data.exc_level || '\u00A0'}
@@ -854,7 +851,6 @@
                                           排便: <span style={{display:'inline-block', minWidth:'2em'}}>{data.exc_stool_freq || '\u00A0'}</span>
                                         </div>
                                       </td>
-
                                       <td className="p-1 align-top text-[11px] leading-tight relative min-h-[3em]">
                                         <div>
                                           <div>用具: {getCheckedItems(data.exc_tool, excLabels)} {data.exc_tool_note && `（${data.exc_tool_note}）`}</div>
@@ -865,7 +861,6 @@
                                           <div>下剤: {data.exc_laxative === '有' ? `有 (${data.exc_laxative_detail})` : '無'}</div>
                                           <div style={{ whiteSpace: 'pre-wrap' }}>{data.exc_note}</div>
                                         </div>
-                                        
                                         <div className="absolute bottom-2 right-1 text-[12px]">
                                           最終排便: {data.exc_last_stool_month || '　　　'}/{data.exc_last_stool_day || '　　　'}
                                         </div>
@@ -898,13 +893,11 @@
                                             <div style={{whiteSpace:'pre-wrap'}}>{data.sleep_note}</div>
                                         </td>
                                     </tr>
-                                    
                                     <tr>
                                         <th>障害</th>
                                         <td className="text-xs">{getCheckedItems(data.disability, disLabels)}</td>
                                         <td className="text-xs">意思疎通: {data.communication}</td>
                                     </tr>
-                                    
                                     <tr>
                                         <th>身体補助具</th>
                                         <td colSpan="2" className="text-xs p-1">
